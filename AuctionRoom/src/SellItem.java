@@ -148,8 +148,8 @@ public class SellItem extends JDialog {
 
     private void addLot() {
         try {
-            LotStatus qsTemplate = new LotStatus();
-            LotStatus qStatus = (LotStatus) space.take(qsTemplate, null, TWO_SECONDS);
+            PSLotStatus qsTemplate = new PSLotStatus();
+            PSLotStatus qStatus = (PSLotStatus) space.take(qsTemplate, null, TWO_SECONDS);
 
             // if there is no QueueStatus object in the space print an error
             if (qStatus == null) {
@@ -165,7 +165,7 @@ public class SellItem extends JDialog {
             Double itemBuyNow = Double.parseDouble(textFieldBuyNow.getText());
             ArrayList<Integer> bid_value = new ArrayList<>();
             bid_value.add(0);
-            ItemLot newJob = new ItemLot(lotNumber, itemName, itemSellerName, itemDescription, itemBuyNow, bid_value, false, false, null);
+            PSItemLot newJob = new PSItemLot(lotNumber, itemName, itemSellerName, itemDescription, itemBuyNow, bid_value, false, false, null);
             qStatus.addJob();
             space.write(qStatus, null, Lease.FOREVER);
             space.write(newJob, null, Lease.FOREVER);

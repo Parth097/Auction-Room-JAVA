@@ -115,19 +115,19 @@ public class Buyer extends JFrame implements RemoteEventListener {
 	//Function to show all the items which have been bough by the current user logged in.
     private void boughtByCurrentUser() {
         try {
-            LotStatus lTemplate = new LotStatus();
-            LotStatus lStatus = (LotStatus) space.readIfExists(lTemplate, null, 100);
+            PSLotStatus lTemplate = new PSLotStatus();
+            PSLotStatus lStatus = (PSLotStatus) space.readIfExists(lTemplate, null, 100);
 
             int noOfItems = lStatus.nextLot;
 
             for (int currentItem = 0; currentItem < noOfItems; currentItem++) {
 
-                ItemLot qiTemplate = new ItemLot();
+                PSItemLot qiTemplate = new PSItemLot();
                 qiTemplate.itemID = currentItem;
                 qiTemplate.isPurchased = true;
                 qiTemplate.isDeleted = false;
                 qiTemplate.itemBuyer = AuctionServer.currentLoggedInUser;
-                ItemLot nextJob = (ItemLot) space.read(qiTemplate, null, 100);
+                PSItemLot nextJob = (PSItemLot) space.read(qiTemplate, null, 100);
 
                 if (nextJob == null) {
 
@@ -160,7 +160,7 @@ public class Buyer extends JFrame implements RemoteEventListener {
             theStub = (RemoteEventListener) myDefaultExporter.export(this);
 
             // add the listener
-            ItemLot template = new ItemLot();
+            PSItemLot template = new PSItemLot();
             space.notify(template, null, this.theStub, Lease.FOREVER, null);
 
         } catch (Exception e) {

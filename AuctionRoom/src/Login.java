@@ -127,15 +127,15 @@ public class Login extends JDialog {
             String username = textFieldItemUsernameID.getText();
             String password = hash(textFieldPassword.getText());
 
-            User userTemplate = new User();
-            userTemplate.username = username;
-            User readUser = (User) space.readIfExists(userTemplate, null, 2000);
+            PSUser PSUserTemplate = new PSUser();
+            PSUserTemplate.username = username;
+            PSUser readPSUser = (PSUser) space.readIfExists(PSUserTemplate, null, 2000);
 
-            if (readUser == null) {
+            if (readPSUser == null) {
                 JOptionPane.showMessageDialog(null, "User does not exist");
             }
 
-            if (readUser.password.equals(password)) {
+            if (readPSUser.password.equals(password)) {
                 dispose();
                 AuctionRoom auctionRoom = new AuctionRoom(username);
                 auctionRoom.setVisible(true);

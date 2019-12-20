@@ -111,13 +111,13 @@ public class RegisterPage extends JDialog {
                 JOptionPane.showMessageDialog(null, "PLease enter all the fields");
             }
 
-            User userTemplate = new User();
-            userTemplate.username = username;
-            User readUser = (User) space.readIfExists(userTemplate, null, 2000);
+            PSUser PSUserTemplate = new PSUser();
+            PSUserTemplate.username = username;
+            PSUser readPSUser = (PSUser) space.readIfExists(PSUserTemplate, null, 2000);
 
-            if (readUser == null) {
-                User user = new User(username, password);
-                space.write(user, null, Lease.FOREVER);
+            if (readPSUser == null) {
+                PSUser PSUser = new PSUser(username, password);
+                space.write(PSUser, null, Lease.FOREVER);
             } else {
                 JOptionPane.showMessageDialog(null, "User already exist");
             }

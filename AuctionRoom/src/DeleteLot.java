@@ -121,9 +121,9 @@ public class DeleteLot extends JDialog {
 
         Integer itemID = Integer.parseInt(textFieldBuyPrice.getText());
         try {
-            ItemLot itemTemplate = new ItemLot();
+            PSItemLot itemTemplate = new PSItemLot();
             itemTemplate.itemID = itemID;
-            ItemLot nextJob = (ItemLot) space.takeIfExists(itemTemplate, null, TWO_SECONDS);
+            PSItemLot nextJob = (PSItemLot) space.takeIfExists(itemTemplate, null, TWO_SECONDS);
             nextJob.isPurchased = false;
             nextJob.isDeleted = true;
             space.write(nextJob, null, Lease.FOREVER);

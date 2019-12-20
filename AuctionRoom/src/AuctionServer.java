@@ -15,13 +15,13 @@ public class AuctionServer {
             System.exit(1);
         }
 
-        LotStatus template = new LotStatus();
+        PSLotStatus template = new PSLotStatus();
         try {
-            LotStatus returnedObject = (LotStatus)space.readIfExists(template,null, ONESECOND);
+            PSLotStatus returnedObject = (PSLotStatus)space.readIfExists(template,null, ONESECOND);
             if (returnedObject == null) {
                 // there is no object in the space, so create one
                 try {
-                    LotStatus qs = new LotStatus(0);
+                    PSLotStatus qs = new PSLotStatus(0);
                     space.write(qs, null, Lease.FOREVER);
                     System.out.println(template.getClass().getName() + " object added to space");
                     System.exit(0);

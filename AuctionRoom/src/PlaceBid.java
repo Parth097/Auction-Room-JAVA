@@ -130,18 +130,18 @@ public class PlaceBid extends JDialog {
             Integer item_ID = Integer.valueOf(strItemID);
             Integer bidValue = Integer.valueOf(strBidValue);
 
-            ItemLot itemTemplate = new ItemLot();
+            PSItemLot itemTemplate = new PSItemLot();
             itemTemplate.itemID = item_ID;
             itemTemplate.isPurchased = false;
             itemTemplate.isDeleted = false;
-            ItemLot itemObject = (ItemLot) space.read(itemTemplate, null, TWO_SECONDS);
+            PSItemLot itemObject = (PSItemLot) space.read(itemTemplate, null, TWO_SECONDS);
             if (itemObject == null) {
                 System.out.println("No items found in the space");
             } else if (bidValue <= itemObject.returnHighestBid()) {
                 JOptionPane.showMessageDialog(null,
                         "Bid Amount Must Be Higher Than Current Bid: " + itemObject.returnHighestBid());
             } else {
-                ItemLot itemObjectOut = (ItemLot) space.takeIfExists(itemTemplate, null, TWO_MINUTES);
+                PSItemLot itemObjectOut = (PSItemLot) space.takeIfExists(itemTemplate, null, TWO_MINUTES);
 
                 itemObjectOut.itemBuyer = AuctionServer.currentLoggedInUser;
                 itemObjectOut.addBid(bidValue);

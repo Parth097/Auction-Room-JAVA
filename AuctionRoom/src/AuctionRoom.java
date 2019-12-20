@@ -75,7 +75,7 @@ public class AuctionRoom extends JFrame implements RemoteEventListener {
             theStub = (RemoteEventListener) myDefaultExporter.export(this);
 
             // add the listener
-            ItemLot template = new ItemLot();
+            PSItemLot template = new PSItemLot();
             space.notify(template, null, this.theStub, Lease.FOREVER, null);
 
         } catch (Exception e) {
@@ -183,18 +183,18 @@ public class AuctionRoom extends JFrame implements RemoteEventListener {
     // function to print all the lots within the java space to the system
     private void processPrintLots() {
         try {
-            LotStatus lTemplate = new LotStatus();
-            LotStatus lStatus = (LotStatus) space.readIfExists(lTemplate, null, 100);
+            PSLotStatus lTemplate = new PSLotStatus();
+            PSLotStatus lStatus = (PSLotStatus) space.readIfExists(lTemplate, null, 100);
 
             int noOfItems = lStatus.nextLot;
 
             for (int currentItem = 0; currentItem < noOfItems; currentItem++) {
 
-                ItemLot qiTemplate = new ItemLot();
+                PSItemLot qiTemplate = new PSItemLot();
                 qiTemplate.itemID = currentItem;
                 qiTemplate.isPurchased = false;
                 qiTemplate.isDeleted = false;
-                ItemLot nextJob = (ItemLot) space.read(qiTemplate, null, 100);
+                PSItemLot nextJob = (PSItemLot) space.read(qiTemplate, null, 100);
 
                 if (nextJob == null) {
 

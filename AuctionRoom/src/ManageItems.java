@@ -47,11 +47,7 @@ public class ManageItems extends JFrame implements RemoteEventListener {
     private JTextField txtCurrentUser;
 
 
-    /**
-     * Create the frame.
-     *
-     * @param username
-     */
+
     public ManageItems() {
         space = SpaceUtils.getSpace();
         if (space == null) {
@@ -76,7 +72,7 @@ public class ManageItems extends JFrame implements RemoteEventListener {
             theStub = (RemoteEventListener) myDefaultExporter.export(this);
 
             // add the listener
-            ItemLot template = new ItemLot();
+            PSItemLot template = new PSItemLot();
             space.notify(template, null, this.theStub, Lease.FOREVER, null);
 
         } catch (Exception e) {
@@ -168,19 +164,19 @@ public class ManageItems extends JFrame implements RemoteEventListener {
 
     private void displayMyLots() {
         try {
-            LotStatus lTemplate = new LotStatus();
-            LotStatus lStatus = (LotStatus) space.readIfExists(lTemplate, null, 100);
+            PSLotStatus lTemplate = new PSLotStatus();
+            PSLotStatus lStatus = (PSLotStatus) space.readIfExists(lTemplate, null, 100);
 
             int noOfItems = lStatus.nextLot;
 
             for (int currentItem = 0; currentItem < noOfItems; currentItem++) {
 
-                ItemLot qiTemplate = new ItemLot();
+                PSItemLot qiTemplate = new PSItemLot();
                 qiTemplate.itemID = currentItem;
                 qiTemplate.isPurchased = false;
                 qiTemplate.isDeleted = false;
                 qiTemplate.itemSeller = AuctionServer.currentLoggedInUser;
-                ItemLot nextJob = (ItemLot) space.read(qiTemplate, null, 100);
+                PSItemLot nextJob = (PSItemLot) space.read(qiTemplate, null, 100);
 
                 if (nextJob == null) {
 
@@ -215,9 +211,9 @@ public class ManageItems extends JFrame implements RemoteEventListener {
         try {
             String itemID = (String) list.getSelectedValue();
             Integer job_id = findJobID(itemID);
-            ItemLot qiTemplate = new ItemLot();
+            PSItemLot qiTemplate = new PSItemLot();
             qiTemplate.itemID = job_id;
-            ItemLot nextJob = (ItemLot) space.takeIfExists(qiTemplate, null, TWO_SECONDS);
+            PSItemLot nextJob = (PSItemLot) space.takeIfExists(qiTemplate, null, TWO_SECONDS);
             if (nextJob == null) {
 
             } else {

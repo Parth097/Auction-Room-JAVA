@@ -136,9 +136,9 @@ public class BuyNow extends JDialog {
 
             Integer itemID = Integer.parseInt(textFieldBuyPrice.getText());
             try {
-                ItemLot itemTemplate = new ItemLot();
+                PSItemLot itemTemplate = new PSItemLot();
                 itemTemplate.itemID = itemID;
-                ItemLot nextJob = (ItemLot) space.takeIfExists(itemTemplate, txn, 100);
+                PSItemLot nextJob = (PSItemLot) space.takeIfExists(itemTemplate, txn, 100);
                 nextJob.isPurchased = true;
                 itemTemplate.isDeleted = false;
                 nextJob.itemBuyer = AuctionServer.currentLoggedInUser;

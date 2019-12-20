@@ -74,9 +74,9 @@ public class ItemDetails extends JDialog {
     // creating a function to show all the details of the lots
     private void populateWithItemDetails(Integer itemID) {
         try {
-            ItemLot itemTemplate = new ItemLot();
+            PSItemLot itemTemplate = new PSItemLot();
             itemTemplate.itemID = itemID;
-            ItemLot itemObject = (ItemLot) space.readIfExists(itemTemplate, null, TWO_MINUTES);
+            PSItemLot itemObject = (PSItemLot) space.readIfExists(itemTemplate, null, TWO_MINUTES);
 
             if (itemObject == null) {
                 System.out.println("No items found in the space");
