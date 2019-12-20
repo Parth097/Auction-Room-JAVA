@@ -26,215 +26,214 @@ import java.awt.event.ActionEvent;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
+
 import javax.swing.JTextField;
 
-public class AuctionRoom extends JFrame implements RemoteEventListener{
+public class AuctionRoom extends JFrame implements RemoteEventListener {
 
-	private static final long TWO_SECONDS = 2 * 1000;  // two thousand milliseconds
-	private JavaSpace space;
-	private JPanel contentPane;
-	private RemoteEventListener theStub;
-	JList list;
-	DefaultListModel model;
-	private Exporter myDefaultExporter;
-	
-	private static final Pattern p = Pattern.compile("^\\D+(\\d+).*");
-	
-	private Integer jobID;
+    private static final long TWO_SECONDS = 2 * 1000;  // two thousand milliseconds
+    private JavaSpace space;
+    private JPanel contentPane;
+    private RemoteEventListener theStub;
+    JList list;
+    DefaultListModel model;
+    private Exporter myDefaultExporter;
 
-	private String userLoggedIn;
-	private JTextField txtCurrentUser;
+    // regEx to find the pattern for an ID number
+    private static final Pattern p = Pattern.compile("^\\D+(\\d+).*");
 
-
-
+    //initialising variales
+    private Integer jobID;
+    private String userLoggedIn;
+    private JTextField txtCurrentUser;
 
 
-	/**
-	 * Create the frame.
-	 * @param username
-	 */
-	public AuctionRoom(String username) {
-		this.userLoggedIn = username;
-		AuctionServer.currentLoggedInUser = username;
-		space = SpaceUtils.getSpace();
-		if (space == null){
-			System.err.println("Failed to find the javaspace");
-			System.exit(1);
-		}
-		myDefaultExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(0),new BasicILFactory(), false, true);
-		init();
-		setVisible(true);
-		getItems();
-		processPrintLots();
+    // Method to run the space, set the current user logged in to the username variable, as well as calling all the important functions
+    public AuctionRoom(String username) {
+        this.userLoggedIn = username;
+        AuctionServer.currentLoggedInUser = username;
+        space = SpaceUtils.getSpace();
+        if (space == null) {
+            System.err.println("Failed to find the javaspace");
+            System.exit(1);
+        }
+        myDefaultExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(0), new BasicILFactory(), false, true);
+        init();
+        setVisible(true);
+        getItems();
+        processPrintLots();
 
-		//pack();
+        //pack();
 
 
-	}
+    }
+    // get the items from the space with notify to display (rather than manually refreshing)
+    private void getItems() {
+        try {
+            // register this as a remote object
+            // and get a reference to the 'stub'
+            theStub = (RemoteEventListener) myDefaultExporter.export(this);
 
-	private void getItems() {
-		try {
-			// register this as a remote object
-			// and get a reference to the 'stub'
-			theStub = (RemoteEventListener) myDefaultExporter.export(this);
+            // add the listener
+            ItemLot template = new ItemLot();
+            space.notify(template, null, this.theStub, Lease.FOREVER, null);
 
-			// add the listener
-			ItemLot template = new ItemLot();
-			space.notify(template, null, this.theStub, Lease.FOREVER, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    // creating the GUI
+    private void init() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 761, 469);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setLayout(new BorderLayout(0, 0));
+        setContentPane(contentPane);
 
+        JPanel panel_title = new JPanel();
+        contentPane.add(panel_title, BorderLayout.NORTH);
 
-	private void init() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 761, 469);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+        JLabel lblAuctionRoom = new JLabel("Auction Room");
+        lblAuctionRoom.setFont(new Font("Dialog", Font.BOLD, 24));
+        panel_title.add(lblAuctionRoom);
 
-		JPanel panel_title = new JPanel();
-		contentPane.add(panel_title, BorderLayout.NORTH);
+        txtCurrentUser = new JTextField();
+        txtCurrentUser.setEditable(false);
+        txtCurrentUser.setText("Current User: " + AuctionServer.currentLoggedInUser);
+        panel_title.add(txtCurrentUser);
+        txtCurrentUser.setColumns(15);
 
-		JLabel lblAuctionRoom = new JLabel("Auction Room");
-		lblAuctionRoom.setFont(new Font("Dialog", Font.BOLD, 24));
-		panel_title.add(lblAuctionRoom);
-		
-		txtCurrentUser = new JTextField();
-		txtCurrentUser.setEditable(false);
-		txtCurrentUser.setText("Current User: " + AuctionServer.currentLoggedInUser);
-		panel_title.add(txtCurrentUser);
-		txtCurrentUser.setColumns(15);
+        JPanel panel_buttons = new JPanel();
+        contentPane.add(panel_buttons, BorderLayout.SOUTH);
 
-		JPanel panel_buttons = new JPanel();
-		contentPane.add(panel_buttons, BorderLayout.SOUTH);
+        JButton btnPlaceBid = new JButton("Place Bid");
+        btnPlaceBid.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new PlaceBid().setVisible(true);
 
-		JButton btnPlaceBid = new JButton("Place Bid");
-		btnPlaceBid.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new PlaceBid().setVisible(true);
-				
-			}
-		});
-		panel_buttons.add(btnPlaceBid);
+            }
+        });
+        panel_buttons.add(btnPlaceBid);
 
-		JButton btnBuyNow = new JButton("Buy Now");
-		btnBuyNow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new BuyNow().setVisible(true);
+        JButton btnBuyNow = new JButton("Buy Now");
+        btnBuyNow.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new BuyNow().setVisible(true);
 
-			}
-		});
-		panel_buttons.add(btnBuyNow);
+            }
+        });
+        panel_buttons.add(btnBuyNow);
 
-		JButton btnSellItem = new JButton("Sell Item");
-		btnSellItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new SellItem().setVisible(true);
+        JButton btnSellItem = new JButton("Sell Item");
+        btnSellItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                new SellItem().setVisible(true);
 
-			}
-		});
-		panel_buttons.add(btnSellItem);
+            }
+        });
+        panel_buttons.add(btnSellItem);
 
-		JButton btnLogout = new JButton("Log Out");
-		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//log Out
-				dispose();
-				new Login().setVisible(true);
-			}
-		});
-		panel_buttons.add(btnLogout);
+        JButton btnLogout = new JButton("Log Out");
+        btnLogout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                //log Out
+                dispose();
+                new Login().setVisible(true);
+            }
+        });
+        panel_buttons.add(btnLogout);
 
-		JButton btnManage = new JButton("Manage");
-		btnManage.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dispose();
-				new ManageItems().setVisible(true);
-				//get some help
-			}
-		});
-		
-		JButton buttonDetails = new JButton("Details");
-		buttonDetails.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String itemID = (String) list.getSelectedValue();
-				Integer job_id = findJobID(itemID);
-				new ItemDetails(job_id).setVisible(true);;
-			}
-		});
-		panel_buttons.add(buttonDetails);
-		panel_buttons.add(btnManage);
+        JButton btnManage = new JButton("Manage");
+        btnManage.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                dispose();
+                new ManageItems().setVisible(true);
+                //get some help
+            }
+        });
 
-		JPanel panel_content = new JPanel();
-		contentPane.add(panel_content, BorderLayout.CENTER);
-		panel_content.setLayout(new BorderLayout(0, 0));
-		JScrollPane scrollPane = new JScrollPane();
-		panel_content.add(scrollPane, BorderLayout.SOUTH);	
+        JButton buttonDetails = new JButton("Details");
+        buttonDetails.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String itemID = (String) list.getSelectedValue();
+                Integer job_id = findJobID(itemID);
+                new ItemDetails(job_id).setVisible(true);
+                ;
+            }
+        });
+        panel_buttons.add(buttonDetails);
+        panel_buttons.add(btnManage);
 
-		model = new DefaultListModel();
-		list = new JList(model);
+        JPanel panel_content = new JPanel();
+        contentPane.add(panel_content, BorderLayout.CENTER);
+        panel_content.setLayout(new BorderLayout(0, 0));
+        JScrollPane scrollPane = new JScrollPane();
+        panel_content.add(scrollPane, BorderLayout.SOUTH);
 
-		JScrollPane scrollPaneItems = new JScrollPane(list);
-		panel_content.add(scrollPaneItems, BorderLayout.CENTER);
+        model = new DefaultListModel();
+        list = new JList(model);
 
-	}
+        JScrollPane scrollPaneItems = new JScrollPane(list);
+        panel_content.add(scrollPaneItems, BorderLayout.CENTER);
 
-	private void processPrintLots(){
-		try{
-			LotStatus lTemplate = new LotStatus();
-			LotStatus lStatus = (LotStatus)space.readIfExists(lTemplate, null, 100);
+    }
 
-			int noOfItems = lStatus.nextLot;
+    // function to print all the lots within the java space to the system
+    private void processPrintLots() {
+        try {
+            LotStatus lTemplate = new LotStatus();
+            LotStatus lStatus = (LotStatus) space.readIfExists(lTemplate, null, 100);
 
-			for(int currentItem = 0; currentItem<noOfItems; currentItem++){
-				
-				ItemLot qiTemplate = new ItemLot();
-				qiTemplate.itemID = currentItem;
-				qiTemplate.isPurchased = false;
-				qiTemplate.isDeleted = false;
-				ItemLot nextJob = (ItemLot)space.read(qiTemplate,null, 100);
-				
-				if(nextJob == null) {
-					
-				}else {
-					// we have a job to process
-					int nextJobNumber = nextJob.itemID;
-					String nextJobName = nextJob.itemName;
-					Double nextJobBuyNow = nextJob.buyNow;
-					Integer bids;
-					if (nextJob.returnHighestBid() == null) {
-						bids = 0;
-					}else {
-						bids = nextJob.returnHighestBid();
-					}
-					model.addElement("Job ID: " + nextJobNumber + " \n Item: " + nextJobName + " \n Buy Now: £" + nextJobBuyNow + " \n Highest Bid: " + bids);
-				}
-			}
+            int noOfItems = lStatus.nextLot;
 
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
+            for (int currentItem = 0; currentItem < noOfItems; currentItem++) {
 
-	public void notify(RemoteEvent ev) {
-		model.removeAllElements();
-		processPrintLots();
+                ItemLot qiTemplate = new ItemLot();
+                qiTemplate.itemID = currentItem;
+                qiTemplate.isPurchased = false;
+                qiTemplate.isDeleted = false;
+                ItemLot nextJob = (ItemLot) space.read(qiTemplate, null, 100);
 
-	}
-	
-	private Integer findJobID(String value) {
-	    Matcher m = p.matcher(value);
-	    // if an occurrence if a pattern was found in a given string...
-	    if (m.find()) {
-	        String x = m.group(1); // first expression from round brackets (Testing)
-	        jobID = Integer.valueOf(x);
-	    }
-	    return jobID;
-	}
+                if (nextJob == null) {
+
+                } else {
+                    // we have a job to process
+                    int nextJobNumber = nextJob.itemID;
+                    String nextJobName = nextJob.itemName;
+                    Double nextJobBuyNow = nextJob.buyNow;
+                    Integer bids;
+                    if (nextJob.returnHighestBid() == null) {
+                        bids = 0;
+                    } else {
+                        bids = nextJob.returnHighestBid();
+                    }
+                    model.addElement("Job ID: " + nextJobNumber + " \n Item: " + nextJobName + " \n Buy Now: £" + nextJobBuyNow + " \n Highest Bid: " + bids);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //notify function
+    public void notify(RemoteEvent ev) {
+        model.removeAllElements();
+        processPrintLots();
+
+    }
+
+    private Integer findJobID(String value) {
+        Matcher m = p.matcher(value);
+        // if an occurrence if a pattern was found in a given string...
+        if (m.find()) {
+            String x = m.group(1); // first expression from round brackets (Testing)
+            jobID = Integer.valueOf(x);
+        }
+        return jobID;
+    }
 
 
 }

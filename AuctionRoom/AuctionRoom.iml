@@ -18,49 +18,20 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="module-library">
-      <library name="reggie-dl.jar">
+    <orderEntry type="module-library" exported="">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../apache-river-3.0.0/lib-dl/reggie-dl.jar!/" />
+          <root url="jar:///local/apache-river-3.0.0/lib/jsk-lib.jar!/" />
+          <root url="jar:///local/apache-river-3.0.0/lib/jsk-platform.jar!/" />
+          <root url="jar:///local/apache-river-3.0.0/lib/outrigger.jar!/" />
+          <root url="jar:///local/apache-river-3.0.0/lib/reggie.jar!/" />
+          <root url="jar:///local/apache-river-3.0.0/lib-dl/reggie-dl.jar!/" />
+          <root url="file://$MODULE_DIR$" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="jsk-lib.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../apache-river-3.0.0/lib/jsk-lib.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="jsk-platform.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../apache-river-3.0.0/lib/jsk-platform.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="outrigger.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../apache-river-3.0.0/lib/outrigger.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="reggie.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../apache-river-3.0.0/lib/reggie.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/src" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>
